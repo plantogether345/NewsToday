@@ -74,25 +74,29 @@ export async function POST(req: NextRequest) {
     const lastMessage = messages[messages.length - 1];
     const userMessage = lastMessage.content;
 
-    // Generate embedding for memory retrieval
+    // Generate embedding for memory retrieval (non-blocking)
+    let memoryContext = "";
     const embedding = await generateEmbedding(userMessage);
 
-    // Query Pinecone for relevant context
-    const memoryResults = await queryPineconeMemory(embedding, 5);
-    const memoryContext = memoryResults
-      .filter((m) => m.metadata)
-      .map((m) => `[Memory] ${m.metadata?.content || ""}`)
-      .join("\n");
+    try {
+      const memoryResults = await queryPineconeMemory(embedding, 5);
+      memoryContext = memoryResults
+        .filter((m: { metadata?: Record<string, unknown> }) => m.metadata)
+        .map((m: { metadata?: Record<string, unknown> }) => `[Memory] ${(m.metadata?.content as string) || ""}`)
+        .join("\n");
+    } catch (memErr) {
+      console.error("Memory retrieval failed (non-fatal):", memErr);
+    }
 
-    // Store user message in Pinecone for future memory
+    // Store user message in Pinecone for future memory (fire-and-forget)
     const msgId = `solar_${sessionId || "default"}_${Date.now()}`;
-    await storeToPinecone(msgId, embedding, {
+    storeToPinecone(msgId, embedding, {
       content: userMessage,
       role: "user",
       sessionId: sessionId || "default",
       timestamp: new Date().toISOString(),
       type: "conversation",
-    });
+    }).catch((err) => console.error("Store message failed (non-fatal):", err));
 
     // Detect intent
     const isForecastRequest = detectForecastIntent(userMessage);
@@ -133,7 +137,7 @@ ${isCsvAnalysis && csvSummary ? `\nThe user wants to analyze their uploaded CSV 
         Authorization: `Bearer ${CEREBRAS_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "llama-4-scout-17b-16e-instruct",
+        model: "llama-3.3-70b",
         messages: [
           { role: "system", content: systemPrompt },
           ...messages.slice(-10),
@@ -145,25 +149,27 @@ ${isCsvAnalysis && csvSummary ? `\nThe user wants to analyze their uploaded CSV 
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Cerebras API error:", errorText);
-      return NextResponse.json(
-        { error: "Failed to get AI response" },
-        { status: 500 }
-      );
+      console.error("Cerebras API error:", response.status, errorText);
+      // Fallback response if Cerebras fails
+      return NextResponse.json({
+        message: "I'm currently experiencing connectivity issues with my AI backend. Please try again in a moment. If the issue persists, it may be a temporary API limitation.",
+        isForecastRequest: false,
+      });
     }
 
     const data = await response.json();
     const assistantMessage = data.choices?.[0]?.message?.content || "I apologize, I could not generate a response.";
 
-    // Store assistant response in Pinecone memory
-    const assistantEmbedding = await generateEmbedding(assistantMessage);
-    await storeToPinecone(`solar_${sessionId || "default"}_resp_${Date.now()}`, assistantEmbedding, {
-      content: assistantMessage.substring(0, 1000),
-      role: "assistant",
-      sessionId: sessionId || "default",
-      timestamp: new Date().toISOString(),
-      type: "conversation",
-    });
+    // Store assistant response in Pinecone memory (fire-and-forget)
+    generateEmbedding(assistantMessage).then((assistantEmbedding) =>
+      storeToPinecone(`solar_${sessionId || "default"}_resp_${Date.now()}`, assistantEmbedding, {
+        content: assistantMessage.substring(0, 1000),
+        role: "assistant",
+        sessionId: sessionId || "default",
+        timestamp: new Date().toISOString(),
+        type: "conversation",
+      })
+    ).catch((err) => console.error("Store response failed (non-fatal):", err));
 
     return NextResponse.json({
       message: assistantMessage,
