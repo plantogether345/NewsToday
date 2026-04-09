@@ -292,6 +292,112 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Solar AI Agent CTA Section */}
+      <section className="relative border-b border-[#d9d1c5] bg-[#F2EFEA] overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(circle at top left, rgba(47,93,80,0.07), transparent 30%), radial-gradient(circle at bottom right, rgba(196,140,86,0.05), transparent 26%)",
+            }}
+          ></div>
+        </div>
+
+        <div className="relative max-w-[1380px] mx-auto grid lg:grid-cols-[0.34fr_1fr]">
+          {/* Left Rail */}
+          <div className="border-b lg:border-b-0 lg:border-r border-[#d9d1c5] px-6 sm:px-8 lg:px-10 py-12 lg:py-16">
+            <div className="lg:sticky lg:top-32">
+              <div className="inline-flex items-center gap-3 text-[10px] sm:text-[11px] uppercase tracking-[0.14em] text-[#6f675f] mb-8" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <span className="inline-block h-[6px] w-[6px] rounded-full bg-[#C48C56]"></span>
+                Solar AI Agent
+              </div>
+
+              <p className="max-w-[14rem] text-[13px] leading-7 text-[#7a7268] font-light" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                An AI-powered conversational agent specialized in solar photovoltaic systems. Upload data, forecast production, and optimize maintenance &mdash; all through natural conversation.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Content */}
+          <div className="px-6 sm:px-8 lg:px-14 py-14 sm:py-16 lg:py-20">
+            <div className="max-w-[980px]">
+              <h2
+                className="tracking-[-0.04em] leading-[1.04] text-[2.2rem] sm:text-[2.8rem] md:text-[3.4rem] lg:text-[4.2rem] text-[#181512]"
+                style={{ fontFamily: "'Instrument Serif', 'Plus Jakarta Sans', serif" }}
+              >
+                Forecast soiling, optimize cleaning &mdash; your <span className="italic text-[#2F5D50]">AI specialist</span> for solar PV performance.
+              </h2>
+
+              <div className="mt-10 lg:mt-12 grid md:grid-cols-[1fr_0.9fr] gap-10 lg:gap-14 items-start pt-8 border-t border-[#d9d1c5]">
+                <div className="space-y-6">
+                  <p className="text-[15px] sm:text-[16px] leading-8 text-[#5f5851] font-light" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Upload your CSV data and let the AI agent analyze soiling patterns, production losses, and environmental impacts using advanced Kalman filter modeling and time-series forecasting.
+                  </p>
+
+                  <p className="text-[15px] sm:text-[16px] leading-8 text-[#5f5851] font-light" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Get actionable insights on cleaning schedules, financial impact, and performance optimization &mdash; all through an intuitive chat interface with persistent memory.
+                  </p>
+
+                  <div className="pt-4 grid sm:grid-cols-3 gap-5">
+                    <div className="border-t border-[#d9d1c5] pt-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-[#8a8178] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>01</p>
+                      <p className="text-[13px] leading-6 text-[#1f1b18]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>AI-powered forecasting</p>
+                    </div>
+                    <div className="border-t border-[#d9d1c5] pt-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-[#8a8178] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>02</p>
+                      <p className="text-[13px] leading-6 text-[#1f1b18]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>CSV data analysis</p>
+                    </div>
+                    <div className="border-t border-[#d9d1c5] pt-4">
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-[#8a8178] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>03</p>
+                      <p className="text-[13px] leading-6 text-[#1f1b18]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Persistent memory</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-6">
+                    <a
+                      href="/solar-ai-agent"
+                      className="inline-flex items-center gap-3 bg-[#2F5D50] text-[#F2EFEA] px-8 py-4 rounded-full text-base font-medium transition-all hover:scale-105 hover:bg-[#264a40] cursor-pointer"
+                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <circle cx="12" cy="12" r="5" />
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                      </svg>
+                      Try Solar AI Agent
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="group relative">
+                  <div className="relative overflow-hidden bg-[#080812] min-h-[420px] lg:min-h-[500px] rounded-sm">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#2F5D50]/20 via-[#080812] to-[#0f0f1a]" />
+                    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                      <svg className="w-16 h-16 text-[#2F5D50] mb-6 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.8">
+                        <circle cx="12" cy="12" r="5" />
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                      </svg>
+                      <p className="text-[1.8rem] leading-[1] tracking-[-0.03em] text-[#F2EFEA] mb-3" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 300 }}>
+                        Solar PV
+                        <br />
+                        <span className="italic text-[#C48C56]">AI Agent</span>
+                      </p>
+                      <p className="text-[13px] text-[#F2EFEA]/40 font-light max-w-[22ch]" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        Chat-based forecasting with Kalman modeling and persistent memory.
+                      </p>
+                    </div>
+                    <div className="absolute inset-5 sm:inset-6 border border-[rgba(255,255,255,0.06)] transition-all duration-500 group-hover:border-[rgba(255,255,255,0.12)]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Solar Dashboard CTA Section */}
       <section className="relative border-b border-[#d9d1c5] bg-[#f5f1ea] overflow-hidden">
         {/* subtle atmospheric wash */}
