@@ -3,9 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Liveblocks } from "@liveblocks/node";
 
-const liveblocks = new Liveblocks({
-  secret: process.env.LIVEBLOCKS_SECRET_KEY!,
-});
+function getLiveblocks() {
+  return new Liveblocks({
+    secret: process.env.LIVEBLOCKS_SECRET_KEY || "sk_placeholder",
+  });
+}
 
 // Generate a consistent color from a string (user ID)
 function stringToColor(str: string): string {
@@ -40,7 +42,7 @@ export async function POST(req: NextRequest) {
   const userColor = stringToColor(userId);
 
   try {
-    const liveblocksSession = liveblocks.prepareSession(userId, {
+    const liveblocksSession = getLiveblocks().prepareSession(userId, {
       userInfo: {
         name: userName,
         email: userEmail,
