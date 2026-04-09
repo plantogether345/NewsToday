@@ -241,7 +241,7 @@ function ForecastForm({
   );
 
   return (
-    <div className="bg-[#0f0f1a] border border-white/10 rounded-2xl p-6 space-y-6 animate-fadeIn">
+    <div className="bg-[#1A1A1A] border border-black/10 rounded-2xl p-6 space-y-6 animate-fadeIn text-white">
       {/* LOCALISATION */}
       <div className="space-y-4">
         <h4 className="text-xs font-semibold text-[#C48C56] uppercase tracking-widest flex items-center gap-2">
@@ -361,22 +361,22 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
     <div className="space-y-5 animate-fadeIn">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-4 text-center">
+        <div className="bg-[#1A1A1A] border border-black/10 rounded-xl p-4 text-center text-white">
           <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Missions / An</p>
           <p className="text-2xl font-light text-white">{summary.totalMissions}</p>
           <p className="text-[10px] text-green-400 mt-1">{summary.frequencyStatus}</p>
         </div>
-        <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-4 text-center">
+        <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-4 text-center">
           <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Encrassement Max Y2</p>
           <p className="text-2xl font-light text-[#C48C56]">{summary.maxSoilingY2}</p>
           <p className="text-[10px] text-white/30 mt-1">Indice Kalman cumule</p>
         </div>
-        <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-4 text-center">
+        <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-4 text-center">
           <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Perte Production / An</p>
           <p className="text-2xl font-light text-white">{summary.annualLossKwh.toLocaleString()}</p>
           <p className="text-[10px] text-white/30 mt-1">kWh/an - {summary.annualLossPercent}% perdu</p>
         </div>
-        <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-4 text-center">
+        <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-4 text-center">
           <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Bilan Net Annuel</p>
           <p className={`text-2xl font-light ${summary.netBalance >= 0 ? "text-green-400" : "text-red-400"}`}>
             {summary.netBalance >= 0 ? "+" : ""}{summary.netBalance} DT
@@ -386,7 +386,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       </div>
 
       {/* Soiling Evolution Chart */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4 flex items-center gap-2">
           <span className="text-lg">&#128200;</span> Evolution Encrassement Y2(t) &mdash; 12 mois
         </h4>
@@ -394,7 +394,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       </div>
 
       {/* Financial Analysis */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4 flex items-center gap-2">
           <span className="text-lg">&#128176;</span> Analyse Financiere Annuelle
         </h4>
@@ -421,7 +421,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       </div>
 
       {/* Production Loss Chart */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-4">
           Perte Production Mensuelle (kWh)
         </h4>
@@ -429,7 +429,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       </div>
 
       {/* Cleaning Schedule */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
           <span className="text-lg">&#128197;</span> Planning Missions de Nettoyage
         </h4>
@@ -449,7 +449,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
 
       {/* Alerts & Recommendations */}
       {aiInsights && (
-        <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+        <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
           <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
             <span className="text-lg">&#128276;</span> Alertes &amp; Recommandations
           </h4>
@@ -460,7 +460,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       )}
 
       {/* Monthly Detail Table */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest flex items-center gap-2">
             <span className="text-lg">&#128203;</span> Tableau Mensuel Detaille
@@ -514,7 +514,7 @@ function ForecastResultsView({ results }: { results: ForecastResults }) {
       </div>
 
       {/* Kalman Model */}
-      <div className="bg-[#0f0f1a] border border-white/10 rounded-xl p-5">
+      <div className="bg-[#1A1A1A] border border-black/10 text-white rounded-xl p-5">
         <h4 className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-3 flex items-center gap-2">
           <span className="text-lg">&#129518;</span> Modele Kalman Applique
         </h4>
@@ -697,53 +697,141 @@ export default function SolarAIAgentPage() {
     }
   };
 
+  // Canvas animation ref
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let animId: number;
+    let time = 0;
+
+    const blocks = [
+      { t: 15, l: 3, w: 22, h: 6, r: 218, g: 178, b: 239 },
+      { t: 28, l: 20, w: 24, h: 6, r: 241, g: 172, b: 255 },
+      { t: 41, l: 45, w: 20, h: 6, r: 245, g: 184, b: 103 },
+      { t: 54, l: 60, w: 18, h: 6, r: 255, g: 224, b: 112 },
+      { t: 67, l: 78, w: 14, h: 6, r: 128, g: 178, b: 255 },
+      { t: 80, l: 10, w: 16, h: 5, r: 178, g: 218, b: 178 },
+    ];
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas!.width = w * dpr;
+      canvas!.height = h * dpr;
+      ctx!.scale(dpr, dpr);
+    }
+
+    function drawPixelFade(x: number, y: number, w: number, h: number, r: number, g: number, b: number) {
+      const solidPct = 0.35;
+      const solidW = w * solidPct;
+      const fadeW = w * (1 - solidPct);
+      ctx!.fillStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
+      ctx!.fillRect(x, y, solidW, h);
+      const blockSize = Math.max(6, Math.floor(h / 6));
+      const cols = Math.ceil(fadeW / blockSize);
+      const rows = Math.ceil(h / blockSize);
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const px = x + solidW + col * blockSize;
+          const py = y + row * blockSize;
+          let noise = Math.sin(col * 12.9898 + row * 78.233 + time * 0.05) * 43758.5453;
+          noise = noise - Math.floor(noise);
+          let alpha = 1.0 - (col / cols) * 1.2;
+          alpha += (noise - 0.5) * 0.4;
+          alpha += Math.sin(time * 0.02 + col * 0.2 + row * 0.5) * 0.15;
+          alpha = Math.max(0, Math.min(0.35, alpha * 0.35));
+          if (alpha > 0.02) {
+            ctx!.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            ctx!.fillRect(px, py, blockSize + 0.5, blockSize + 0.5);
+          }
+        }
+      }
+    }
+
+    function animate() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx!.clearRect(0, 0, w, h);
+      blocks.forEach((b) => {
+        drawPixelFade((b.l / 100) * w, (b.t / 100) * h, (b.w / 100) * w, (b.h / 100) * h, b.r, b.g, b.b);
+      });
+      time++;
+      animId = requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener("resize", resize);
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animId);
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#080812] text-white flex flex-col" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div className="relative min-h-screen flex flex-col antialiased text-[#1A1A1A] selection:bg-black selection:text-white" style={{ backgroundColor: "#F2EBE1", fontFamily: "'Space Mono', 'Plus Jakarta Sans', monospace" }}>
+      {/* Animated Background Canvas */}
+      <canvas ref={canvasRef} className="fixed inset-0 z-0 pointer-events-none w-full h-full" />
+
+      {/* Grid Lines */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex justify-between px-[5vw]">
+        <div className="w-px h-full bg-black/[0.06]" />
+        <div className="w-px h-full bg-black/[0.06]" />
+        <div className="w-px h-full bg-black/[0.06]" />
+        <div className="w-px h-full bg-black/[0.06]" />
+      </div>
+
       {/* Header */}
-      <header className="border-b border-white/10 bg-[#0a0a16]/80 backdrop-blur-xl sticky top-0 z-50">
+      <header className="relative z-40 border-b border-black/10 bg-[#F2EBE1]/80 backdrop-blur-xl sticky top-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors">
+            <a href="/" className="flex items-center gap-2 text-[#444] hover:text-[#1A1A1A] transition-colors">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
-            <div className="w-px h-6 bg-white/10" />
+            <div className="w-px h-6 bg-black/10" />
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#2F5D50]/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#2F5D50]/15 flex items-center justify-center">
                 <svg className="w-4 h-4 text-[#2F5D50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <circle cx="12" cy="12" r="5" />
                   <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                 </svg>
               </div>
               <div>
-                <h1 className="text-sm font-medium text-white">Solar PV AI Agent</h1>
-                <p className="text-[10px] text-white/30">Photovoltaic Specialist</p>
+                <h1 className="text-sm font-bold tracking-tight text-[#1A1A1A]">Solar PV AI Agent</h1>
+                <p className="text-[10px] text-[#888] tracking-wider uppercase">Photovoltaic Specialist</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {csvData && (
-              <span className="text-[10px] bg-[#2F5D50]/20 text-[#2F5D50] px-2 py-1 rounded-full">
+              <span className="text-[10px] bg-[#2F5D50]/15 text-[#2F5D50] px-2 py-1 rounded-full font-bold tracking-wider uppercase">
                 CSV Loaded
               </span>
             )}
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-[10px] text-white/30">Online</span>
+            <div className="w-2 h-2 rounded-full bg-[#2F5D50] animate-pulse" />
+            <span className="text-[10px] text-[#888] tracking-wider uppercase">Online</span>
           </div>
         </div>
       </header>
 
       {/* Chat Messages */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="relative z-30 flex-1 overflow-y-auto">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[85%] ${msg.role === "user" ? "order-1" : ""}`}>
-                {/* Avatar */}
                 <div className={`flex items-start gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
                   <div className={`w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center ${
-                    msg.role === "user" ? "bg-[#C48C56]/20" : "bg-[#2F5D50]/20"
+                    msg.role === "user" ? "bg-[#C48C56]/20" : "bg-[#2F5D50]/15"
                   }`}>
                     {msg.role === "user" ? (
                       <svg className="w-3.5 h-3.5 text-[#C48C56]" viewBox="0 0 24 24" fill="currentColor">
@@ -758,14 +846,13 @@ export default function SolarAIAgentPage() {
                     )}
                   </div>
 
-                  <div className={`rounded-2xl px-4 py-3 ${
+                  <div className={`rounded-2xl px-4 py-3 shadow-sm ${
                     msg.role === "user"
-                      ? "bg-[#1a1a2e] border border-white/10"
-                      : "bg-[#0f0f1a] border border-white/5"
+                      ? "bg-[#1A1A1A] text-white border border-black/10"
+                      : "bg-white/70 backdrop-blur-sm border border-black/[0.08]"
                   }`}>
-                    {/* CSV file badge */}
                     {msg.csvFile && (
-                      <div className="flex items-center gap-2 mb-2 text-xs bg-[#2F5D50]/10 text-[#2F5D50] px-2 py-1 rounded-lg w-fit">
+                      <div className="flex items-center gap-2 mb-2 text-xs bg-[#2F5D50]/10 text-[#2F5D50] px-2 py-1 rounded-lg w-fit font-bold tracking-wider uppercase">
                         <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                           <polyline points="14 2 14 8 20 8" />
@@ -774,19 +861,18 @@ export default function SolarAIAgentPage() {
                       </div>
                     )}
 
-                    {/* Message content */}
-                    <div className="text-sm text-white/80 leading-relaxed prose prose-invert prose-sm max-w-none">
+                    <div className={`text-sm leading-relaxed prose prose-sm max-w-none ${
+                      msg.role === "user" ? "prose-invert text-white/90" : "text-[#333] prose-headings:text-[#1A1A1A]"
+                    }`}>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                     </div>
 
-                    {/* Forecast trigger -> show form */}
                     {msg.forecastTrigger && !msg.forecastResults && (
                       <div className="mt-4">
                         <ForecastForm onSubmit={handleForecastSubmit} loading={forecastLoading} />
                       </div>
                     )}
 
-                    {/* Forecast results */}
                     {msg.forecastResults && (
                       <div className="mt-4">
                         <ForecastResultsView results={msg.forecastResults} />
@@ -795,24 +881,23 @@ export default function SolarAIAgentPage() {
                   </div>
                 </div>
 
-                <p className={`text-[9px] text-white/20 mt-1 ${msg.role === "user" ? "text-right mr-10" : "ml-10"}`}>
+                <p className={`text-[9px] text-[#aaa] mt-1 ${msg.role === "user" ? "text-right mr-10" : "ml-10"}`}>
                   {msg.timestamp.toLocaleTimeString()}
                 </p>
               </div>
             </div>
           ))}
 
-          {/* Loading indicator */}
           {(loading || uploading) && (
             <div className="flex justify-start">
               <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-lg bg-[#2F5D50]/20 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-[#2F5D50]/15 flex items-center justify-center">
                   <svg className="w-3.5 h-3.5 text-[#2F5D50]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <circle cx="12" cy="12" r="5" />
                     <path d="M12 1v2M12 21v2" />
                   </svg>
                 </div>
-                <div className="bg-[#0f0f1a] border border-white/5 rounded-2xl px-4 py-3">
+                <div className="bg-white/70 backdrop-blur-sm border border-black/[0.08] rounded-2xl px-4 py-3">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#2F5D50] animate-bounce" style={{ animationDelay: "0ms" }} />
                     <div className="w-1.5 h-1.5 rounded-full bg-[#2F5D50] animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -828,10 +913,9 @@ export default function SolarAIAgentPage() {
       </main>
 
       {/* Input Bar */}
-      <footer className="border-t border-white/10 bg-[#0a0a16]/80 backdrop-blur-xl sticky bottom-0">
+      <footer className="relative z-40 border-t border-black/10 bg-[#F2EBE1]/80 backdrop-blur-xl sticky bottom-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center gap-3 bg-[#0f0f1a] border border-white/10 rounded-2xl px-4 py-3">
-            {/* File upload */}
+          <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm border border-black/[0.08] rounded-2xl px-4 py-3 shadow-sm">
             <input
               ref={fileInputRef}
               type="file"
@@ -846,7 +930,7 @@ export default function SolarAIAgentPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="p-2 rounded-lg hover:bg-white/5 transition-colors text-white/40 hover:text-[#2F5D50] disabled:opacity-30"
+              className="p-2 rounded-lg hover:bg-black/5 transition-colors text-[#888] hover:text-[#2F5D50] disabled:opacity-30"
               title="Upload CSV"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -854,7 +938,6 @@ export default function SolarAIAgentPage() {
               </svg>
             </button>
 
-            {/* Text input */}
             <input
               type="text"
               value={input}
@@ -862,21 +945,20 @@ export default function SolarAIAgentPage() {
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
               placeholder="Ask about solar PV systems, upload CSV data, or request a forecast..."
               disabled={loading}
-              className="flex-1 bg-transparent text-white text-sm placeholder-white/25 outline-none"
+              className="flex-1 bg-transparent text-[#1A1A1A] text-sm placeholder-[#999] outline-none"
             />
 
-            {/* Send */}
             <button
               onClick={sendMessage}
               disabled={!input.trim() || loading}
-              className="p-2 rounded-lg bg-[#2F5D50] text-white hover:bg-[#264a40] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg bg-[#1A1A1A] text-white hover:bg-[#2F5D50] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
-          <p className="text-center text-[10px] text-white/15 mt-2">Solar PV AI Agent powered by advanced forecasting models</p>
+          <p className="text-center text-[10px] text-[#bbb] mt-2 tracking-wider uppercase">Solar PV AI Agent powered by advanced forecasting models</p>
         </div>
       </footer>
 
