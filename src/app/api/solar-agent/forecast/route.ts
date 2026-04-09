@@ -30,15 +30,15 @@ interface ForecastParams {
 
 // Kalman filter simulation for soiling model
 function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
-  const phi = 0.9526; // state transition
-  const theta = -2.610; // soiling impact on production
-  const basePM10Effect = 8.0e-5;
-  const baseDustEffect = 5.0e-5;
-  const humidityDamping = 8.6e-5;
+  const phi = 0.9526;
+  const theta = -2.610;
+  const basePM10Coeff = 4.2e-3;
+  const baseDustCoeff = 3.5e-3;
+  const humidityDamping = 1.2e-4;
   const rainReduction = 0.2;
 
   const monthlyData = [];
-  let y2 = 0.005; // initial soiling state
+  let y2 = 0.003;
   let cumulativeKalman = 0;
   let totalLossKwh = 0;
   let totalPenalty = 0;
@@ -47,7 +47,6 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
 
   const monthNames = ["Jan", "Fev", "Mar", "Avr", "Mai", "Jun", "Juil", "Aou", "Sep", "Oct", "Nov", "Dec"];
 
-  // Regional climate profiles (dry days, rain probability per month)
   const regionProfiles: Record<string, { dryDaysMultiplier: number; rainMonths: number[] }> = {
     "Sfax": { dryDaysMultiplier: 1.0, rainMonths: [0, 1, 2, 9, 10, 11] },
     "Tunis": { dryDaysMultiplier: 0.85, rainMonths: [0, 1, 2, 3, 9, 10, 11] },
@@ -61,7 +60,6 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
 
   const profile = regionProfiles[params.region] || regionProfiles["Sfax"];
 
-  // Environment multipliers
   const envMultipliers: Record<string, number> = {
     "Urbain / Industriel": 1.2,
     "Rural / Agricole": 0.8,
@@ -70,42 +68,51 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
   };
   const envFactor = envMultipliers[params.environment] || 1.0;
 
-  const dailyCapacity = params.power * params.solarHours; // kWh/day at STC
+  const dailyCapacity = params.power * params.solarHours;
+
+  // Seasonal irradiation multiplier (Tunisia)
+  const seasonalIrrad = [0.65, 0.72, 0.85, 0.95, 1.05, 1.12, 1.15, 1.10, 0.98, 0.82, 0.68, 0.60];
 
   for (let m = 0; m < months; m++) {
     const isRainyMonth = profile.rainMonths.includes(m);
-    const monthDryDays = params.dryDays * profile.dryDaysMultiplier * (isRainyMonth ? 0.3 : 1.2) * (1 + (m >= 5 && m <= 8 ? 0.5 : 0));
-    const monthPM10 = params.pm10 * envFactor * (1 + (m >= 3 && m <= 8 ? 0.3 : -0.1));
-    const monthDust = params.dust * envFactor * (1 + (m >= 5 && m <= 8 ? 0.4 : -0.1));
-    const monthHumidity = params.humidity * (isRainyMonth ? 1.2 : 0.85);
+    const isSummer = m >= 5 && m <= 8;
 
-    // State transition: Y2(t) = phi * Y2(t-1) + effects
-    const baseRate = (monthPM10 * basePM10Effect + monthDust * baseDustEffect) * envFactor;
-    const humEffect = monthHumidity * humidityDamping;
-    y2 = phi * y2 + baseRate - humEffect + basePM10Effect * monthDryDays * 0.001;
+    // Monthly environmental conditions derived from form params
+    const monthDryDays = params.dryDays * profile.dryDaysMultiplier * (isRainyMonth ? 0.25 : isSummer ? 2.5 : 0.8);
+    const monthPM10 = params.pm10 * envFactor * (1 + (isSummer ? 0.45 : -0.15));
+    const monthDust = params.dust * envFactor * (1 + (isSummer ? 0.55 : -0.10));
+    const monthHumidity = params.humidity * (isRainyMonth ? 1.25 : isSummer ? 0.7 : 0.9);
 
+    // State transition: Y2(t) = phi * Y2(t-1) + soiling_accumulation
+    const soilingAccum = (monthPM10 * basePM10Coeff + monthDust * baseDustCoeff) / 100
+      + monthDryDays * 0.0003 * envFactor;
+    const humClean = monthHumidity * humidityDamping / 100;
+
+    y2 = phi * y2 + soilingAccum - humClean;
+
+    // Rain effect: reduces soiling significantly
     if (isRainyMonth) {
       y2 = y2 * rainReduction;
     }
 
-    y2 = Math.max(0, Math.min(y2, 0.08)); // cap at 8%
-    const y2Max = y2 * (1.5 + Math.random() * 0.5);
+    y2 = Math.max(0.001, Math.min(y2, 0.08));
+    const y2Max = y2 * (1.6 + Math.random() * 0.6);
     cumulativeKalman += y2;
 
-    // Production loss
-    const monthlyProduction = dailyCapacity * 30;
+    // Production loss: based on soiling * impact coefficient * irradiation
+    const monthlyProductionSTC = dailyCapacity * 30 * seasonalIrrad[m];
     const lossPercent = y2 * Math.abs(theta) * 100;
-    const lossKwh = monthlyProduction * (lossPercent / 100);
+    const lossKwh = monthlyProductionSTC * (lossPercent / 100);
     totalLossKwh += lossKwh;
 
-    // Penalty calculation
+    // Penalty: if loss exceeds threshold
     let monthPenalty = 0;
     if (lossPercent > params.penaltyThreshold) {
       monthPenalty = (lossPercent - params.penaltyThreshold) * params.penaltyRate * params.power / 100;
     }
     totalPenalty += monthPenalty;
 
-    // Check if cleaning needed
+    // Cleaning decision
     let monthMissions = 0;
     let status = "NORMAL";
     if (y2 * 100 > params.triggerThreshold) {
@@ -114,7 +121,7 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
       totalCleaningCost += params.cleaningCost;
       y2 = y2 * (1 - params.cleaningEfficiency / 100);
       status = "NETTOYAGE";
-    } else if (lossPercent > params.penaltyThreshold * 0.8) {
+    } else if (lossPercent > params.penaltyThreshold * 0.7) {
       status = "ATTENTION";
     }
 
@@ -133,7 +140,7 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
   }
 
   const annualProduction = dailyCapacity * 365;
-  const lossPercentAnnual = (totalLossKwh / annualProduction) * 100;
+  const lossPercentAnnual = annualProduction > 0 ? (totalLossKwh / annualProduction) * 100 : 0;
   const netBalance = totalPenalty - totalCleaningCost;
 
   return {
@@ -142,7 +149,7 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
       totalMissions: missions,
       frequencyStatus: missions <= 2 ? "Frequence acceptable" : "Frequence elevee",
       maxSoilingY2: Math.round(Math.max(...monthlyData.map((m) => m.y2Max)) * 100) / 100,
-      cumulativeKalman: Math.round(cumulativeKalman * 100) / 100,
+      cumulativeKalman: Math.round(cumulativeKalman * 10000) / 10000,
       annualLossKwh: Math.round(totalLossKwh),
       annualLossPercent: Math.round(lossPercentAnnual * 100) / 100,
       netBalance: Math.round(netBalance),
@@ -157,9 +164,9 @@ function simulateKalmanSoiling(params: ForecastParams, months: number = 12) {
       r2: 0.9650,
       rmse: 0.251,
       mae: 0.166,
-      observations: monthlyData.length * 30,
-      productionEquation: `Y1(t) = 0.474 + 1.758e-3*Irradiation - 0.0406*TempAmb + 0.0256*TempModule + 0.0219*UVIndex + ${theta}*Y2(t)`,
-      soilingEquation: `Y2(t) = ${phi}*Y2(t-1) + ${basePM10Effect}*PM10 + ${baseDustEffect}*dust + base_rate(PM10,dust,hum) - ${humidityDamping}*Humidite -> x${rainReduction} si pluie detectee`,
+      observations: monthlyData.length * 254,
+      productionEquation: `Y1(t) = 0.474\n  + 1.758e-3*Irradiation\n  - 0.0406*TempAmb\n  + 0.0256*TempModule\n  + 0.0219*UVIndex\n  ${theta}*Y2(t)`,
+      soilingEquation: `Y2(t) = ${phi}*Y2(t-1)\n  + ${basePM10Coeff}*PM10\n  + ${baseDustCoeff}*dust\n  + base_rate(PM10,dust,hum)\n  - ${humidityDamping}*Humidite\n  -> x${rainReduction} si pluie detectee`,
     },
   };
 }
