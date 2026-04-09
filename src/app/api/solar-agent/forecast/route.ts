@@ -228,7 +228,7 @@ Provide 3-4 concise, actionable recommendations and alerts. Format as bullet poi
           Authorization: `Bearer ${CEREBRAS_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama-3.3-70b",
+          model: "llama3.1-8b",
           messages: [
             { role: "system", content: "You are a solar energy PV specialist. Provide concise technical recommendations. Never mention tools or APIs." },
             { role: "user", content: insightsPrompt },
