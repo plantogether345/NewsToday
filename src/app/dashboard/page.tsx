@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { ChartCard } from '@/components/dashboard/ChartCard';
+import dynamic from 'next/dynamic';
 import {
   BarChart, LineChart, PieChart, RadarChart, HeatMapChart,
   TreeMapChart, BumpChart, CalendarChart, ChordChart, CirclePackingChart,
@@ -17,7 +18,11 @@ import {
   SunburstChart, SwarmPlotChart, VoronoiChart, WaffleChart, MarimekkoChart,
   RadialBarChart
 } from '@/components/dashboard/NivoCharts';
-import { GraphAnalytics } from '@/components/dashboard/GraphAnalytics';
+
+const GraphAnalytics = dynamic(
+  () => import('@/components/dashboard/GraphAnalytics').then(mod => ({ default: mod.GraphAnalytics })),
+  { ssr: false, loading: () => <div className="h-[400px] flex items-center justify-center"><p className="text-white/30 text-xs">Loading graph...</p></div> }
+);
 import {
   transformGmailForCharts, transformCalendarForCharts,
   transformDriveForCharts, transformContactsForCharts,
@@ -61,7 +66,13 @@ export default function DashboardPage() {
       const res = await fetch(`/api/workspace/${tool}`);
       if (res.ok) {
         const data = await res.json();
-        setToolData((prev) => ({ ...prev, [tool]: data }));
+        if (!data.error) {
+          setToolData((prev) => ({ ...prev, [tool]: data }));
+        } else {
+          console.error(`API error for ${tool}:`, data.error);
+        }
+      } else {
+        console.error(`HTTP error for ${tool}:`, res.status);
       }
     } catch (error) {
       console.error(`Failed to fetch ${tool} data:`, error);

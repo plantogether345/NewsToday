@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { ChartErrorBoundary } from './ErrorBoundary';
 
 interface ChartCardProps {
   title: string;
@@ -11,7 +12,7 @@ interface ChartCardProps {
 
 export function ChartCard({ title, subtitle, children, className = '' }: ChartCardProps) {
   return (
-    <div className={`glass-card rounded-xl overflow-hidden group transition-all duration-300 ${className}`}>
+    <div className={`glass-card rounded-xl overflow-hidden group transition-all duration-300 relative ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
       <span className="absolute top-2 left-2 text-white/20 text-[10px] font-mono group-hover:text-white/40 transition-colors">+</span>
       <span className="absolute top-2 right-2 text-white/20 text-[10px] font-mono group-hover:text-white/40 transition-colors">+</span>
@@ -24,7 +25,9 @@ export function ChartCard({ title, subtitle, children, className = '' }: ChartCa
           {subtitle && <p className="text-[10px] text-white/30 mt-1">{subtitle}</p>}
         </div>
         <div className="relative">
-          {children}
+          <ChartErrorBoundary>
+            {children}
+          </ChartErrorBoundary>
         </div>
       </div>
     </div>
