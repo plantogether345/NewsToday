@@ -1,50 +1,66 @@
 {
-  "homepage": "https://prakhar0202.github.io/newstoday",
-  "name": "newstoday",
-  "version": "0.1.0",
+  "name": "integrate-co",
+  "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "gh-pages": "^6.1.1",
+    "next": "^14.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-infinite-scroll-component": "^6.1.0",
-    "react-router-dom": "^6.25.1",
-    "react-scripts": "5.0.1",
-    "react-top-loading-bar": "^2.3.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "next-auth": "^4.24.7",
+    "googleapis": "^140.0.0",
+    "@nivo/bar": "^0.87.0",
+    "@nivo/line": "^0.87.0",
+    "@nivo/pie": "^0.87.0",
+    "@nivo/radar": "^0.87.0",
+    "@nivo/heatmap": "^0.87.0",
+    "@nivo/treemap": "^0.87.0",
+    "@nivo/bump": "^0.87.0",
+    "@nivo/calendar": "^0.87.0",
+    "@nivo/chord": "^0.87.0",
+    "@nivo/circle-packing": "^0.87.0",
+    "@nivo/funnel": "^0.87.0",
+    "@nivo/geo": "^0.87.0",
+    "@nivo/network": "^0.87.0",
+    "@nivo/parallel-coordinates": "^0.87.0",
+    "@nivo/sankey": "^0.87.0",
+    "@nivo/scatterplot": "^0.87.0",
+    "@nivo/stream": "^0.87.0",
+    "@nivo/sunburst": "^0.87.0",
+    "@nivo/swarmplot": "^0.87.0",
+    "@nivo/voronoi": "^0.87.0",
+    "@nivo/waffle": "^0.87.0",
+    "@nivo/marimekko": "^0.87.0",
+    "@nivo/radial-bar": "^0.87.0",
+    "@nivo/tooltip": "^0.87.0",
+    "@nivo/core": "^0.87.0",
+    "@react-sigma/core": "^4.0.3",
+    "sigma": "^3.0.0-beta.26",
+    "graphology": "^0.25.4",
+    "graphology-layout-forceatlas2": "^0.10.1",
+    "graphology-layout": "^0.6.1",
+    "three": "^0.164.0",
+    "@react-three/fiber": "^8.16.0",
+    "@react-three/drei": "^9.105.0",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.378.0",
+    "date-fns": "^3.6.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object":"^7.0.0-0",
-    "@rollup/plugin-terser": "^0.4.4"
+    "typescript": "^5.4.0",
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.164.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
   }
 }
-
