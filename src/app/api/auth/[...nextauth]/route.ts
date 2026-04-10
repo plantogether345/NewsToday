@@ -32,17 +32,8 @@ export const authOptions: AuthOptions = {
             'https://www.googleapis.com/auth/documents.readonly',
             // Slides
             'https://www.googleapis.com/auth/presentations.readonly',
-            // Admin (Directory)
-            'https://www.googleapis.com/auth/admin.directory.user.readonly',
             // YouTube
             'https://www.googleapis.com/auth/youtube.readonly',
-            // Google Fit
-            'https://www.googleapis.com/auth/fitness.activity.read',
-            // Keep (Notes)
-            'https://www.googleapis.com/auth/keep.readonly',
-            // Chat
-            'https://www.googleapis.com/auth/chat.spaces.readonly',
-            'https://www.googleapis.com/auth/chat.messages.readonly',
           ].join(' '),
           access_type: 'offline',
           prompt: 'consent',
