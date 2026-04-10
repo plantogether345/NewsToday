@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import {
   Mail, Calendar, HardDrive, Users, CheckSquare, FileSpreadsheet,
   FileText, Presentation, Youtube, CircleDot, LogOut, ChevronDown,
@@ -51,6 +51,8 @@ export default function DashboardPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [toolData, setToolData] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const fetchedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -59,33 +61,35 @@ export default function DashboardPage() {
   }, [status, router]);
 
   const fetchToolData = useCallback(async (tool: string) => {
-    if (tool === 'overview' || toolData[tool] || loading[tool]) return;
+    if (tool === 'overview') return;
+    if (fetchedRef.current.has(tool)) return;
+    fetchedRef.current.add(tool);
 
     setLoading((prev) => ({ ...prev, [tool]: true }));
+    setErrors((prev) => ({ ...prev, [tool]: '' }));
     try {
       const res = await fetch(`/api/workspace/${tool}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (!data.error) {
-          setToolData((prev) => ({ ...prev, [tool]: data }));
-        } else {
-          console.error(`API error for ${tool}:`, data.error);
-        }
+      const data = await res.json();
+      if (res.ok && !data.error) {
+        setToolData((prev) => ({ ...prev, [tool]: data }));
       } else {
-        console.error(`HTTP error for ${tool}:`, res.status);
+        const errMsg = data.error || `HTTP ${res.status}`;
+        setErrors((prev) => ({ ...prev, [tool]: errMsg }));
+        console.error(`API error for ${tool}:`, errMsg);
       }
-    } catch (error) {
+    } catch (error: any) {
+      const errMsg = error?.message || 'Network error';
+      setErrors((prev) => ({ ...prev, [tool]: errMsg }));
       console.error(`Failed to fetch ${tool} data:`, error);
     } finally {
       setLoading((prev) => ({ ...prev, [tool]: false }));
     }
-  }, [toolData, loading]);
+  }, []);
 
   useEffect(() => {
     if (selectedTool !== 'overview') {
       fetchToolData(selectedTool);
     } else {
-      // Fetch gmail and calendar for overview
       fetchToolData('gmail');
       fetchToolData('calendar');
       fetchToolData('drive');
@@ -93,20 +97,24 @@ export default function DashboardPage() {
   }, [selectedTool, fetchToolData]);
 
   const refreshTool = async (tool: string) => {
+    fetchedRef.current.delete(tool);
     setToolData((prev) => {
       const next = { ...prev };
       delete next[tool];
       return next;
     });
+    setErrors((prev) => ({ ...prev, [tool]: '' }));
     setLoading((prev) => ({ ...prev, [tool]: true }));
     try {
       const res = await fetch(`/api/workspace/${tool}`);
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && !data.error) {
         setToolData((prev) => ({ ...prev, [tool]: data }));
+      } else {
+        setErrors((prev) => ({ ...prev, [tool]: data.error || `HTTP ${res.status}` }));
       }
-    } catch (error) {
-      console.error(`Failed to refresh ${tool} data:`, error);
+    } catch (error: any) {
+      setErrors((prev) => ({ ...prev, [tool]: error?.message || 'Network error' }));
     } finally {
       setLoading((prev) => ({ ...prev, [tool]: false }));
     }
@@ -212,15 +220,15 @@ export default function DashboardPage() {
 
         {/* Content based on selected tool */}
         {selectedTool === 'overview' && <OverviewDashboard data={toolData} loading={loading} />}
-        {selectedTool === 'gmail' && <GmailDashboard data={toolData.gmail} loading={loading.gmail} />}
-        {selectedTool === 'calendar' && <CalendarDashboard data={toolData.calendar} loading={loading.calendar} />}
-        {selectedTool === 'drive' && <DriveDashboard data={toolData.drive} loading={loading.drive} />}
-        {selectedTool === 'contacts' && <ContactsDashboard data={toolData.contacts} loading={loading.contacts} />}
-        {selectedTool === 'tasks' && <TasksDashboard data={toolData.tasks} loading={loading.tasks} />}
-        {selectedTool === 'sheets' && <FilesDashboard data={toolData.sheets} loading={loading.sheets} type="sheets" />}
-        {selectedTool === 'docs' && <FilesDashboard data={toolData.docs} loading={loading.docs} type="docs" />}
-        {selectedTool === 'slides' && <FilesDashboard data={toolData.slides} loading={loading.slides} type="slides" />}
-        {selectedTool === 'youtube' && <YouTubeDashboard data={toolData.youtube} loading={loading.youtube} />}
+        {selectedTool === 'gmail' && <GmailDashboard data={toolData.gmail} loading={loading.gmail} error={errors.gmail} />}
+        {selectedTool === 'calendar' && <CalendarDashboard data={toolData.calendar} loading={loading.calendar} error={errors.calendar} />}
+        {selectedTool === 'drive' && <DriveDashboard data={toolData.drive} loading={loading.drive} error={errors.drive} />}
+        {selectedTool === 'contacts' && <ContactsDashboard data={toolData.contacts} loading={loading.contacts} error={errors.contacts} />}
+        {selectedTool === 'tasks' && <TasksDashboard data={toolData.tasks} loading={loading.tasks} error={errors.tasks} />}
+        {selectedTool === 'sheets' && <FilesDashboard data={toolData.sheets} loading={loading.sheets} error={errors.sheets} type="sheets" />}
+        {selectedTool === 'docs' && <FilesDashboard data={toolData.docs} loading={loading.docs} error={errors.docs} type="docs" />}
+        {selectedTool === 'slides' && <FilesDashboard data={toolData.slides} loading={loading.slides} error={errors.slides} type="slides" />}
+        {selectedTool === 'youtube' && <YouTubeDashboard data={toolData.youtube} loading={loading.youtube} error={errors.youtube} />}
       </div>
     </main>
   );
@@ -233,6 +241,29 @@ function LoadingSkeleton() {
       <div className="flex flex-col items-center gap-3">
         <Loader2 className="w-6 h-6 text-white/30 animate-spin" />
         <p className="text-xs text-white/30 font-medium">Fetching analytics data...</p>
+      </div>
+    </div>
+  );
+}
+
+function ErrorDisplay({ error }: { error: string }) {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="glass-card rounded-xl p-8 max-w-md text-center">
+        <p className="text-sm text-rose-400/80 font-medium mb-2">Failed to load data</p>
+        <p className="text-xs text-white/40">{error}</p>
+        <p className="text-xs text-white/30 mt-4">Make sure the corresponding Google API is enabled in your Google Cloud Console and the required scopes were granted during sign-in.</p>
+      </div>
+    </div>
+  );
+}
+
+function NoDataDisplay() {
+  return (
+    <div className="flex items-center justify-center py-20">
+      <div className="glass-card rounded-xl p-8 max-w-md text-center">
+        <p className="text-sm text-white/50 font-medium mb-2">No data available</p>
+        <p className="text-xs text-white/30">The API returned empty data. Try clicking Refresh or check that the tool has data in your Google account.</p>
       </div>
     </div>
   );
@@ -316,9 +347,10 @@ function OverviewDashboard({ data, loading }: { data: any; loading: any }) {
 }
 
 // ==================== GMAIL DASHBOARD ====================
-function GmailDashboard({ data, loading }: { data: any; loading: boolean }) {
+function GmailDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformGmailForCharts(data);
   if (!charts) return null;
@@ -412,9 +444,10 @@ function GmailDashboard({ data, loading }: { data: any; loading: boolean }) {
 }
 
 // ==================== CALENDAR DASHBOARD ====================
-function CalendarDashboard({ data, loading }: { data: any; loading: boolean }) {
+function CalendarDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformCalendarForCharts(data);
   if (!charts) return null;
@@ -507,9 +540,10 @@ function CalendarDashboard({ data, loading }: { data: any; loading: boolean }) {
 }
 
 // ==================== DRIVE DASHBOARD ====================
-function DriveDashboard({ data, loading }: { data: any; loading: boolean }) {
+function DriveDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformDriveForCharts(data);
   if (!charts) return null;
@@ -585,9 +619,10 @@ function DriveDashboard({ data, loading }: { data: any; loading: boolean }) {
 }
 
 // ==================== CONTACTS DASHBOARD ====================
-function ContactsDashboard({ data, loading }: { data: any; loading: boolean }) {
+function ContactsDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformContactsForCharts(data);
   if (!charts) return null;
@@ -621,9 +656,10 @@ function ContactsDashboard({ data, loading }: { data: any; loading: boolean }) {
 }
 
 // ==================== TASKS DASHBOARD ====================
-function TasksDashboard({ data, loading }: { data: any; loading: boolean }) {
+function TasksDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformTasksForCharts(data);
   if (!charts) return null;
@@ -663,9 +699,10 @@ function TasksDashboard({ data, loading }: { data: any; loading: boolean }) {
 }
 
 // ==================== FILES DASHBOARD (Sheets/Docs/Slides) ====================
-function FilesDashboard({ data, loading, type }: { data: any; loading: boolean; type: string }) {
+function FilesDashboard({ data, loading, error, type }: { data: any; loading: boolean; error?: string; type: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformFilesForCharts(data, type);
   if (!charts) return null;
@@ -714,9 +751,10 @@ function FilesDashboard({ data, loading, type }: { data: any; loading: boolean; 
 }
 
 // ==================== YOUTUBE DASHBOARD ====================
-function YouTubeDashboard({ data, loading }: { data: any; loading: boolean }) {
+function YouTubeDashboard({ data, loading, error }: { data: any; loading: boolean; error?: string }) {
   if (loading) return <LoadingSkeleton />;
-  if (!data) return <LoadingSkeleton />;
+  if (error) return <ErrorDisplay error={error} />;
+  if (!data) return <NoDataDisplay />;
 
   const charts = transformYouTubeForCharts(data);
   if (!charts) return null;
